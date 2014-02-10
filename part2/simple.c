@@ -2,15 +2,18 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
-
+#include <linux/list.h>
+#include <linux/slab.h>
 
 struct birthday {
     int day;
     int month;
     int year;
     struct list_head list;
-}
+};
 
+// declare list head for handle
+static LIST_HEAD(birthday_list);
 // print birthday info to kernel log
 void print_birthday_to_kernel(struct birthday *p){
     printk(KERN_INFO "day: %d month: %d year: %d",p->day,p->month,p->year);
@@ -19,25 +22,23 @@ void print_birthday_to_kernel(struct birthday *p){
 /* This function is called when the module is loaded. */
 int simple_init(void)
 {
-    static LIST_HEAD(birthday_list);
-    struct birthday *person; 
+    // pointer to point to each element and to manipulate created birthdays
+    struct birthday *person, *ptr; 
    
     // create 5 bday structs and add to list
-    for(int i=0; i<5; i++){
+    int i;
+    for(i=0; i<5; i++){
         // make up a bday
         person = kmalloc(sizeof(*person), GFP_KERNEL);
         person->day = i+2; // day can't be zero
         person->month = i+4; // nor can month
-        person->year = 1990+i // everyone is a 90s baby
+        person->year = 1990+i; // everyone is a 90s baby
         // init list in element 
         INIT_LIST_HEAD(&person->list);
 
         // add element to list
         list_add_tail(&person->list, &birthday_list);
     }
-
-    // pointer to point to each element
-    struct birthday *ptr;
     
     // traverse list and print output to kernel log
     list_for_each_entry(ptr, &birthday_list, list){
