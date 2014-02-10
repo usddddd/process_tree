@@ -24,11 +24,15 @@ int simple_init(void)
    
     // create 5 bday structs and add to list
     for(int i=0; i<5; i++){
+        // make up a bday
         person = kmalloc(sizeof(*person), GFP_KERNEL);
         person->day = i+2; // day can't be zero
         person->month = i+4; // nor can month
         person->year = 1990+i // everyone is a 90s baby
+        // init list in element 
         INIT_LIST_HEAD(&person->list);
+
+        // add element to list
         list_add_tail(&person->list, &birthday_list);
     }
 
