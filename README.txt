@@ -2,9 +2,9 @@ Adam Fowler
 ajf2177
 
 Part A)
-3.9)
+3.9)During a context switch the kernel must save the state of the currently executing process and load the context of the process which is being switched to. This entails saving the state of the process represented by the PCB in what is known as a state save which includes cpu registers, process state, and memory management information. A state restore is then performed which loads all of the previously mentioned items for the process being switched to.
 
-3.11)
+3.11) The role of the init process in regards to process termination comes into play when a parent process is terminated before it's child process is terminated. The init process will become the parent process of the so called orphan process and call 'wait' so that the child process's entry in the process table and it's process identifier are released as well as the exit value of the child process, otherwise the child process which has not been 'wait'ed on will become what is known as a zombie process.
 
 Part B)
 1.)Typeof is actually a compiler extension but is considered an operator despite that. It is replaced by the typename of its parameter at compile time so something like "typeof(int)" would be replaced by "int".
