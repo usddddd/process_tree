@@ -12,6 +12,28 @@
    list_del()
    list_for_each_entry_safe()
  * */
+
+// offsetof implementation measures offset of member from address 0 thus giving offset of member
+#define offset(type, member) ((size_t) &((type *)0)->member)
+
+
+// my container of implementation specific for birthday struct
+#define get_container(ptr) ({\
+        const typeof(((struct birthday*)0)->list) *_mptr = (ptr);\
+        (struct birthday*)((char*)_mptr - offset(struct birthday, list));})
+
+// my list for each implementation specific for birthday struct
+#define for_each(pos, head)\
+    for(pos = get_container((head)->next);\
+    &pos->list != (head);\
+    pos = get_container(pos->list.next))
+
+// my list for each safe implementation specific for birthday struct
+#define for_each_safe(pos, n, head)\
+    for(pos = get_container((head)->next),n = get_container(pos->list.next) ;\
+    &pos->list != (head);\
+    pos = n, n = get_container(n->list.next))
+
 struct birthday {
     int day;
     int month;
@@ -19,25 +41,20 @@ struct birthday {
     struct list_head list;
 };
 
-// offsetof implementation measures offset of member from address 0 thus giving offset of member
-#define offset(type, member) ((size_t) &((type *)0)->member)
-
 // my list add tail implementation
-add_tail(struct list_head *new, struct list_head *head){
-    struct list_head hprev = head->prev;
+void add_tail(struct list_head *new, struct list_head *head){
+    struct list_head *hprev = head->prev;
     hprev->next = new;
     new->prev = hprev;
     new->next = head;
     head->prev = new;
 }
 
-// my container of implementation
-#define get_container(ptr, type, member) ({\
-        const typeof((type*)0->member) *_mptr = (ptr);\
-        (type*)((char*)_mptr - offset(type, member)i);})
-
-// my list for each implementation
-
+// my list del implementation
+static inline void list_delete(struct list_head *prev, struct list_head *next){
+    next->prev = prev;
+    prev->next = next;
+}
 
 // declare list head for handle
 static LIST_HEAD(birthday_list);
@@ -64,11 +81,11 @@ int simple_init(void)
         INIT_LIST_HEAD(&person->list);
 
         // add element to list
-        add_tail(&person->list, &birthday_list);
+       add_tail(&person->list, &birthday_list);
     }
     
     // traverse list and print output to kernel log
-    list_for_each_entry(ptr, &birthday_list, list){
+    for_each(ptr, &birthday_list){
         print_birthday_to_kernel(ptr);   
     }
 
@@ -82,8 +99,8 @@ void simple_exit(void) {
     struct birthday *next, *ptr;
     
     // delete elems of list and return mem to kernel
-    list_for_each_entry_safe(ptr, next, &birthday_list, list){
-        list_del(&ptr->list);
+    for_each_safe(ptr, next, &birthday_list){
+        list_delete(ptr->list.prev, ptr->list.next);
         kfree(ptr);
     }
 	printk(KERN_INFO "Removing Module\n");
