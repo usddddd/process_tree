@@ -4,40 +4,46 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 
-    // char array to hold tab offset of child processes [limited to 20 levels with 1 for null terminator]
-    char tab_offset[21];
     
     static void print_task_info(struct task_struct *t, int level){
         struct task_struct *task;
         struct list_head *list;
-        char *buffer = kmalloc(sizeof(char)*100, GFP_KERNEL);
+        //char *buffer = kmalloc((sizeof(char)*500), GFP_KERNEL);
 
         // construct offset for tree display
-        int i;
-        for(i = 0; i < level && i < 20; i++){
-            tab_offset[i] = '\t';
-        }
+        //int i;
+        //for(i = 0; i < level && i < 20; i++){
+          //  tab_offset[i] = '\t';
+        //}
         
         // set null terminator
-        tab_offset[i] = '\0';
+        //tab_offset[i] = '\0';
 
         // write task info to buffer
+        //if(level > 0){
+        //snprintf(buffer, sizeof(buffer), "\\_Name: %s  State: %ld  PID: %ld \n",t->comm,t->state,(long)t->pid);
+        //}
+        //else{
+        //snprintf(buffer, sizeof(buffer), "--Name: %s  State: %ld  PID: %ld \n",t->comm,t->state,(long)t->pid);
+        //}
+        
+        // char array to hold offset of child processes [limited to 19 levels with 1 for null terminator]
+        char offset[20] = "         ";
+        offset[level+1] = '\0';
+
+        // print tree to kernel log
         if(level > 0){
-        snprintf(buffer, sizeof(buffer), "%s \\_Name: %s  State: %ld  PID: %ld \n",tab_offset, t->comm,t->state,(long)t->pid);
+        printk(KERN_INFO "%s[%ld]\\__ Name: %s  State: %ld  PID: %ld \n",offset,(long)t->real_parent->pid,t->comm,t->state,(long)t->pid);
         }
         else{
-        snprintf(buffer, sizeof(buffer), "--Name: %s  State: %ld  PID: %ld \n",t->comm,t->state,(long)t->pid);
+        printk(KERN_INFO "%s -- Name: %s  State: %ld  PID: %ld \n",offset,t->comm,t->state,(long)t->pid);
         }
-        
-        // print tree to kernel log
-        printk(KERN_INFO "%s",buffer);
-        
         // iterate through children of init process
         // init_task is list_head not a &list_head
         // book is wrong! use '.' not '->'
         list_for_each(list, &t->children){
             task = list_entry(list, struct task_struct, sibling);
-            print_task_info(task, level+1);
+            print_task_info(task, level+2);
         }
     }
 
