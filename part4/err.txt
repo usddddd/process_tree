@@ -1,0 +1,7 @@
+/home/adam/devel/4118/ajf2177-hw2/part4/ptree.c: In function ‘simple_init’:
+/home/adam/devel/4118/ajf2177-hw2/part4/ptree.c:48:10: warning: unused variable ‘child’ [-Wunused-variable]
+     char child[] = "\\_";
+          ^
+/home/adam/devel/4118/ajf2177-hw2/part4/ptree.c:46:10: warning: unused variable ‘tab_offset’ [-Wunused-variable]
+     char tab_offset[21] = "\t";
+          ^
