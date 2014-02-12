@@ -1,8 +1,8 @@
 Adam Fowler
 ajf2177
 
-My code for the exercises in OSC works exactly as specified in the assignments. For the assignment in which we had to avoid use of kernel macros I basically ungeneralized the macros so they were specific to the birthday struct(by removing some parameters and implicitly using some things) which I hope was ok. I feel that I have a good understanding of the internals but it's hard to unsee the elegance of the kernel macros so I didn't want to ugly them up too much. Also I wasn't sure
-what the kernel modules in part 4 were supposed to be called so mine are plist and ptree respectively.
+My code for the exercises in OSC works exactly as specified in the assignments. For the assignment in which we had to avoid use of kernel macros I basically ungeneralized the macros so they were specific to the birthday struct(by removing some parameters and implicitly using some things) which I hope was ok. I feel that I have a good understanding of the internals but it's hard to unsee the elegance of the kernel macros so I didn't want to ugly them up too much. Also in
+part 4 first I had 2 separate files called plist and ptree respectively but after reading the email I understood we were supposed to only submit the tree version of the process list and name it simple.c so that's what I did.
 
 Part A)
 3.9)During a context switch the kernel must save the state of the currently executing process and load the context of the process which is being switched to. This entails saving the state of the process represented by the PCB in what is known as a state save which includes cpu registers, process state, and memory management information. A state restore is then performed which loads all of the previously mentioned items for the process being switched to.
