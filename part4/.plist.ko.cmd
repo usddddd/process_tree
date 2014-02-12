@@ -1,0 +1,1 @@
+cmd_/home/adam/devel/4118/ajf2177-hw2/part4/plist.ko := ld -r -m elf_i386 -T /usr/src/linux-3.10.27-1-lts/scripts/module-common.lds --build-id  -o /home/adam/devel/4118/ajf2177-hw2/part4/plist.ko /home/adam/devel/4118/ajf2177-hw2/part4/plist.o /home/adam/devel/4118/ajf2177-hw2/part4/plist.mod.o
