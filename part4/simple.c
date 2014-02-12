@@ -3,13 +3,15 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 
+
+
 /* This function is called when the module is loaded. */
 int simple_init(void)
 {
     struct task_struct *task;
     //iterate through processes and output name, state, and process id to kernel log
     for_each_process(task){
-        printk("Name: %s  State: %ld  PID: %ld", task->comm,task->state,(long)task->pid);
+        printk("Name: %s  State: %ld  PID: %ld \n", task->comm,task->state,(long)task->pid);
     }
        printk(KERN_INFO "Loading Module\n");
 
